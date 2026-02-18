@@ -1,0 +1,14 @@
+apiVersion: kai.io/v1alpha1
+kind: EvalTask
+metadata:
+  name: opencompass-eval
+  namespace: default
+spec:
+  opencompass:
+    models:
+      - model: llama-7b
+        modelPath: /models/llama-7b
+    datasets:
+      - mmlu
+    workDir: /workspace
+    outputDir: /outputs

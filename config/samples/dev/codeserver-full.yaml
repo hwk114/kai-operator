@@ -1,0 +1,24 @@
+apiVersion: kai.io/v1alpha1
+kind: DevTask
+metadata:
+  name: codeserver-full
+  namespace: default
+spec:
+  resources:
+    cpu: "4"
+    memory: 8Gi
+    gpu: "0"
+  volumes:
+    - name: workspace
+      type: persistentVolumeClaim
+      capacity: 20Gi
+      storageClass: standard
+      mountPath: /workspace
+  codeserver:
+    password: dev-password
+    workspace: /workspace
+    version: default
+    port: 8080
+    routing:
+      enabled: true
+      pathPrefix: /codeserver/codeserver-full

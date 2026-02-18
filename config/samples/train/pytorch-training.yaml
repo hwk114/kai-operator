@@ -1,0 +1,11 @@
+apiVersion: kai.io/v1alpha1
+kind: TrainTask
+metadata:
+  name: pytorch-training
+  namespace: default
+spec:
+  pytorch:
+    scriptPath: /scripts/train.py
+    maxEpochs: 100
+    batchSize: 32
+    learningRate: "0.001"

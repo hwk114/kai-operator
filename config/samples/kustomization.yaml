@@ -1,0 +1,18 @@
+resources:
+- dev/codeserver-minimal.yaml
+- dev/codeserver-full.yaml
+- dev/jupyter-full.yaml
+- train/pytorch-training.yaml
+- train/tensorflow-training.yaml
+- eval/lm-eval.yaml
+- eval/opencompass-eval.yaml
+- inference/vllm-minimal.yaml
+- inference/vllm-inference.yaml
+- inference/vllm-full.yaml
+- inference/llama-cpp-inference.yaml
+- finetune/lora-minimal.yaml
+- finetune/lora-finetune.yaml
+- finetune/lora-full.yaml
+- finetune/llamafactory-minimal.yaml
+- finetune/llamafactory-finetune.yaml
+- finetune/llamafactory-full.yaml

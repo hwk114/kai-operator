@@ -1,0 +1,58 @@
+apiVersion: kai.io/v1alpha1
+kind: FineTuneTask
+metadata:
+  name: lora-full
+  namespace: default
+spec:
+  resources:
+    cpu: "8"
+    memory: 32Gi
+    gpu: "2"
+    storage: 100Gi
+  volumes:
+    - name: model-storage
+      type: persistentVolumeClaim
+      capacity: 50Gi
+      storageClass: standard
+      mountPath: /models
+    - name: output-storage
+      type: persistentVolumeClaim
+      capacity: 50Gi
+      storageClass: standard
+      mountPath: /output
+  dataSources:
+    - type: pvc
+      mountPath: /data
+      uri: my-dataset-pvc
+  runAfter: []
+  ttlSecondsAfterFinished: 3600
+  lora:
+    image: kohya-ss/sd-scripts:latest
+    modelPath: /models/llama-7b
+    trainData: /data/train.jsonl
+    validData: /data/valid.jsonl
+    outputDir: /output/llama7b-lora
+    targetModules:
+      - q_proj
+      - v_proj
+    loraRank: 16
+    loraAlpha: 32
+    loraDropout: "0.05"
+    batchSize: 4
+    learningRate: "0.0001"
+    epochs: 3
+    warmupSteps: 100
+    cutoffLen: 2048
+    saveSteps: 100
+    evalSteps: 100
+    port: 8000
+    routing:
+      enabled: true
+      gatewayName: default-gateway
+      pathPrefix: /lora
+    env:
+      - name: NCCL_DEBUG
+        value: "INFO"
+    args:
+      - --mixed_precision
+      - fp16

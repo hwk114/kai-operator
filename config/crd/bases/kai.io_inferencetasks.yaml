@@ -1,0 +1,516 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.19.0
+  name: inferencetasks.kai.io
+spec:
+  group: kai.io
+  names:
+    categories:
+    - all
+    kind: InferenceTask
+    listKind: InferenceTaskList
+    plural: inferencetasks
+    shortNames:
+    - inference
+    singular: inferencetask
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .metadata.labels.framework
+      name: Framework
+      type: string
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    - jsonPath: .status.externalURL
+      name: External
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              dataSources:
+                items:
+                  properties:
+                    mountPath:
+                      type: string
+                    type:
+                      type: string
+                    uri:
+                      type: string
+                  required:
+                  - mountPath
+                  - type
+                  - uri
+                  type: object
+                type: array
+              engine:
+                type: string
+              hfMirror:
+                type: string
+              llama-cpp:
+                properties:
+                  args:
+                    items:
+                      type: string
+                    type: array
+                  command:
+                    items:
+                      type: string
+                    type: array
+                  contextSize:
+                    format: int32
+                    type: integer
+                  dependencies:
+                    items:
+                      type: string
+                    type: array
+                  env:
+                    items:
+                      properties:
+                        name:
+                          type: string
+                        value:
+                          type: string
+                      required:
+                      - name
+                      - value
+                      type: object
+                    type: array
+                  gpuLayers:
+                    format: int32
+                    type: integer
+                  image:
+                    type: string
+                  modelPath:
+                    type: string
+                  port:
+                    format: int32
+                    type: integer
+                  resources:
+                    properties:
+                      cpu:
+                        type: string
+                      gpu:
+                        type: string
+                      instanceType:
+                        type: string
+                      memory:
+                        type: string
+                      storage:
+                        type: string
+                    type: object
+                  routing:
+                    properties:
+                      enabled:
+                        type: boolean
+                      externalHost:
+                        type: string
+                      externalPort:
+                        format: int32
+                        type: integer
+                      gatewayName:
+                        type: string
+                      gatewayNamespace:
+                        type: string
+                      gatewayPort:
+                        format: int32
+                        type: integer
+                      hostnames:
+                        items:
+                          type: string
+                        type: array
+                      pathPrefix:
+                        type: string
+                    type: object
+                  threads:
+                    format: int32
+                    type: integer
+                  version:
+                    type: string
+                  volumes:
+                    items:
+                      properties:
+                        mountPath:
+                          type: string
+                        name:
+                          type: string
+                        readOnly:
+                          type: boolean
+                      required:
+                      - mountPath
+                      - name
+                      type: object
+                    type: array
+                type: object
+              model:
+                type: string
+              resources:
+                properties:
+                  cpu:
+                    type: string
+                  gpu:
+                    type: string
+                  instanceType:
+                    type: string
+                  memory:
+                    type: string
+                  storage:
+                    type: string
+                type: object
+              runAfter:
+                items:
+                  type: string
+                type: array
+              tgi:
+                properties:
+                  args:
+                    items:
+                      type: string
+                    type: array
+                  autoScaling:
+                    properties:
+                      maxReplicas:
+                        format: int32
+                        type: integer
+                      minReplicas:
+                        format: int32
+                        type: integer
+                      targetCPUUtilizationPercentage:
+                        format: int32
+                        type: integer
+                      targetGPUUtilizationPercentage:
+                        format: int32
+                        type: integer
+                    type: object
+                  command:
+                    items:
+                      type: string
+                    type: array
+                  dependencies:
+                    items:
+                      type: string
+                    type: array
+                  env:
+                    items:
+                      properties:
+                        name:
+                          type: string
+                        value:
+                          type: string
+                      required:
+                      - name
+                      - value
+                      type: object
+                    type: array
+                  healthCheck:
+                    properties:
+                      initialDelaySeconds:
+                        format: int32
+                        type: integer
+                      path:
+                        type: string
+                      periodSeconds:
+                        format: int32
+                        type: integer
+                      port:
+                        format: int32
+                        type: integer
+                      timeoutSeconds:
+                        format: int32
+                        type: integer
+                    type: object
+                  image:
+                    type: string
+                  maxBatchSize:
+                    format: int32
+                    type: integer
+                  maxInputLen:
+                    format: int32
+                    type: integer
+                  maxTotalTokens:
+                    format: int32
+                    type: integer
+                  modelId:
+                    type: string
+                  modelPath:
+                    type: string
+                  port:
+                    format: int32
+                    type: integer
+                  resources:
+                    properties:
+                      cpu:
+                        type: string
+                      gpu:
+                        type: string
+                      instanceType:
+                        type: string
+                      memory:
+                        type: string
+                      storage:
+                        type: string
+                    type: object
+                  routing:
+                    properties:
+                      enabled:
+                        type: boolean
+                      externalHost:
+                        type: string
+                      externalPort:
+                        format: int32
+                        type: integer
+                      gatewayName:
+                        type: string
+                      gatewayNamespace:
+                        type: string
+                      gatewayPort:
+                        format: int32
+                        type: integer
+                      hostnames:
+                        items:
+                          type: string
+                        type: array
+                      pathPrefix:
+                        type: string
+                    type: object
+                  version:
+                    type: string
+                  volumes:
+                    items:
+                      properties:
+                        mountPath:
+                          type: string
+                        name:
+                          type: string
+                        readOnly:
+                          type: boolean
+                      required:
+                      - mountPath
+                      - name
+                      type: object
+                    type: array
+                type: object
+              ttlSecondsAfterFinished:
+                format: int32
+                type: integer
+              vllm:
+                properties:
+                  args:
+                    items:
+                      type: string
+                    type: array
+                  autoScaling:
+                    properties:
+                      maxReplicas:
+                        format: int32
+                        type: integer
+                      minReplicas:
+                        format: int32
+                        type: integer
+                      targetCPUUtilizationPercentage:
+                        format: int32
+                        type: integer
+                      targetGPUUtilizationPercentage:
+                        format: int32
+                        type: integer
+                    type: object
+                  command:
+                    items:
+                      type: string
+                    type: array
+                  dependencies:
+                    items:
+                      type: string
+                    type: array
+                  env:
+                    items:
+                      properties:
+                        name:
+                          type: string
+                        value:
+                          type: string
+                      required:
+                      - name
+                      - value
+                      type: object
+                    type: array
+                  gpuMemoryUtilization:
+                    type: string
+                  healthCheck:
+                    properties:
+                      initialDelaySeconds:
+                        format: int32
+                        type: integer
+                      path:
+                        type: string
+                      periodSeconds:
+                        format: int32
+                        type: integer
+                      port:
+                        format: int32
+                        type: integer
+                      timeoutSeconds:
+                        format: int32
+                        type: integer
+                    type: object
+                  image:
+                    type: string
+                  maxModelLen:
+                    format: int32
+                    type: integer
+                  modelName:
+                    type: string
+                  modelPath:
+                    type: string
+                  port:
+                    format: int32
+                    type: integer
+                  resources:
+                    properties:
+                      cpu:
+                        type: string
+                      gpu:
+                        type: string
+                      instanceType:
+                        type: string
+                      memory:
+                        type: string
+                      storage:
+                        type: string
+                    type: object
+                  routing:
+                    properties:
+                      enabled:
+                        type: boolean
+                      externalHost:
+                        type: string
+                      externalPort:
+                        format: int32
+                        type: integer
+                      gatewayName:
+                        type: string
+                      gatewayNamespace:
+                        type: string
+                      gatewayPort:
+                        format: int32
+                        type: integer
+                      hostnames:
+                        items:
+                          type: string
+                        type: array
+                      pathPrefix:
+                        type: string
+                    type: object
+                  tensorParallelSize:
+                    format: int32
+                    type: integer
+                  version:
+                    type: string
+                  volumes:
+                    items:
+                      properties:
+                        mountPath:
+                          type: string
+                        name:
+                          type: string
+                        readOnly:
+                          type: boolean
+                      required:
+                      - mountPath
+                      - name
+                      type: object
+                    type: array
+                type: object
+              volumes:
+                items:
+                  properties:
+                    capacity:
+                      type: string
+                    mountPath:
+                      type: string
+                    name:
+                      type: string
+                    storageClass:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - name
+                  - type
+                  type: object
+                type: array
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    message:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              endTime:
+                format: date-time
+                type: string
+              endpoints:
+                items:
+                  type: string
+                type: array
+              externalURL:
+                type: string
+              message:
+                type: string
+              metrics:
+                additionalProperties:
+                  type: string
+                type: object
+              phase:
+                type: string
+              podName:
+                type: string
+              serviceURL:
+                type: string
+              startTime:
+                format: date-time
+                type: string
+            required:
+            - phase
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

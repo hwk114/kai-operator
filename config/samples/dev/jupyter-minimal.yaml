@@ -1,0 +1,10 @@
+apiVersion: kai.io/v1alpha1
+kind: DevTask
+metadata:
+  name: jupyter-minimal
+  namespace: default
+spec:
+  jupyter:
+    version: minimal
+    routing:
+      enabled: true

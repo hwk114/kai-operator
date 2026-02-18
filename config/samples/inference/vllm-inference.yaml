@@ -1,0 +1,17 @@
+apiVersion: kai.io/v1alpha1
+kind: InferenceTask
+metadata:
+  name: vllm-inference
+  namespace: default
+spec:
+  vllm:
+    huggingface:
+      modelId: meta-llama/Llama-2-7b-hf
+      mirrorURL: https://hf-mirror.com
+      token: ""  # optional: set your HF token if needed
+    gpuMemoryUtilization: "0.9"
+    tensorParallelSize: 1
+    port: 8000
+    routing:
+      enabled: true
+      gatewayName: traefik-gateway

@@ -1,0 +1,10 @@
+apiVersion: kai.io/v1alpha1
+kind: FineTuneTask
+metadata:
+  name: llamafactory-minimal
+  namespace: default
+spec:
+  llamafactory:
+    modelPath: /models/Qwen2.5-0.5B
+    trainData: /data/train.jsonl
+    outputDir: /output

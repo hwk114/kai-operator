@@ -1,0 +1,11 @@
+apiVersion: kai.io/v1alpha1
+kind: TrainTask
+metadata:
+  name: tensorflow-training
+  namespace: default
+spec:
+  tensorflow:
+    scriptPath: /scripts/train.py
+    maxSteps: 10000
+    batchSize: 32
+    learningRate: "0.001"

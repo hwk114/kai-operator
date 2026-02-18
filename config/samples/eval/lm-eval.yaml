@@ -1,0 +1,12 @@
+apiVersion: kai.io/v1alpha1
+kind: EvalTask
+metadata:
+  name: lm-eval
+  namespace: default
+spec:
+  lm-eval:
+    modelPath: /models/llama-7b
+    tasks:
+      - mmlu
+      - hellaswag
+    batchSize: 8

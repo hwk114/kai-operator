@@ -1,0 +1,9 @@
+apiVersion: kai.io/v1alpha1
+kind: FineTuneTask
+metadata:
+  name: lora-minimal
+  namespace: default
+spec:
+  lora:
+    modelPath: /models/llama-7b
+    trainData: /data/train.jsonl

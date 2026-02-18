@@ -1,0 +1,43 @@
+apiVersion: kai.io/v1alpha1
+kind: InferenceTask
+metadata:
+  name: vllm-full
+  namespace: default
+spec:
+  resources:
+    cpu: "8"
+    memory: 32Gi
+    gpu: "2"
+    instanceType: nvidia A10G
+  volumes:
+    - name: model-storage
+      type: persistentVolumeClaim
+      capacity: 100Gi
+      storageClass: standard
+      mountPath: /models
+  vllm:
+    modelPath: /models/llama-7b
+    modelName: meta-llama/Llama-2-7b-hf
+    tensorParallelSize: 2
+    gpuMemoryUtilization: "0.9"
+    maxModelLen: 4096
+    port: 8000
+    version: latest
+    env:
+      - name: VLLM_WORKER_MULTIPROC_METHOD
+        value: "spawn"
+      - name: VLLM_LOGGING_LEVEL
+        value: "INFO"
+    healthCheck:
+      path: /v1/models
+      port: 8000
+      initialDelay: 60
+      period: 10
+      timeout: 5
+    routing:
+      enabled: true
+      pathPrefix: /vllm/vllm-full
+    autoScaling:
+      minReplicas: 1
+      maxReplicas: 3
+      targetGPUUtil: 80

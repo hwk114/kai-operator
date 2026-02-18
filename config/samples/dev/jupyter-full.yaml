@@ -1,0 +1,22 @@
+apiVersion: kai.io/v1alpha1
+kind: DevTask
+metadata:
+  name: jupyter-full
+  namespace: default
+spec:
+  resources:
+    cpu: "4"
+    memory: 8Gi
+    gpu: "1"
+  volumes:
+    - name: notebook-storage
+      type: persistentVolumeClaim
+      capacity: 10Gi
+      mountPath: /notebooks
+  jupyter:
+    notebookDir: /notebooks
+    version: default
+    port: 8888
+    routing:
+      enabled: true
+      gatewayName: default-gateway

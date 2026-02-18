@@ -1,0 +1,10 @@
+apiVersion: kai.io/v1alpha1
+kind: DevTask
+metadata:
+  name: codeserver-minimal
+  namespace: default
+spec:
+  codeserver:
+    routing:
+      enabled: true
+      gatewayPort: 8000

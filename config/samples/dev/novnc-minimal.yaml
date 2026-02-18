@@ -1,0 +1,7 @@
+apiVersion: kai.io/v1alpha1
+kind: DevTask
+metadata:
+  name: novnc-test
+  namespace: default
+spec:
+  novnc: {}

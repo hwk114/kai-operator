@@ -40,3 +40,6 @@ kubeconfig
 .env
 .env.local
 .env.*.local
+
+# SDK test output
+test.log

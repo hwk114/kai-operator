@@ -1,4 +1,4 @@
-module github.com/hwk114/kai
+module github.com/hwk114/kai-operator
 
 go 1.24.6
 

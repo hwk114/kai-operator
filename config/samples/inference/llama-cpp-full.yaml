@@ -1,0 +1,41 @@
+apiVersion: kai.io/v1alpha1
+kind: InferenceTask
+metadata:
+  name: llama-cpp-full
+  namespace: default
+spec:
+  resources:
+    cpu: "4"
+    memory: 16Gi
+    gpu: "1"
+    instanceType: nvidia A10G
+  volumes:
+    - name: model-storage
+      type: persistentVolumeClaim
+      capacity: 100Gi
+      storageClass: standard
+      mountPath: /models
+  model: hf://Qwen/Qwen2.5-0.5B-Instruct
+  hfMirror: https://hf-mirror.com
+  llama-cpp:
+    modelPath: /models/Qwen2.5-0.5B-Instruct
+    contextSize: 4096
+    threads: 4
+    gpuLayers: 32
+    port: 8080
+    env:
+      - name: LOG_LEVEL
+        value: "info"
+    healthCheck:
+      path: /v1/models
+      port: 8080
+      initialDelay: 60
+      period: 10
+      timeout: 5
+    routing:
+      enabled: true
+      pathPrefix: /llama-cpp/llama-cpp-full
+    autoScaling:
+      minReplicas: 1
+      maxReplicas: 3
+      targetGPUUtil: 80

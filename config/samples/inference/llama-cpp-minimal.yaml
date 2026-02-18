@@ -1,0 +1,9 @@
+apiVersion: kai.io/v1alpha1
+kind: InferenceTask
+metadata:
+  name: llama-cpp-minimal
+  namespace: default
+spec:
+  model: hf://Qwen/Qwen2.5-0.5B-Instruct
+  hfMirror: https://hf-mirror.com
+  llama-cpp: {}

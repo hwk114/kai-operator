@@ -130,7 +130,7 @@ func GetInferenceImage(inference *kaiiov1alpha1.InferenceTask) string {
 		if inference.Spec.LlamaCpp.Image != "" {
 			return inference.Spec.LlamaCpp.Image
 		}
-		return "ghcr.io/ggerganov/llama.cpp:server"
+		return "ghcr.io/ggml-org/llama.cpp/server"
 	}
 	return "alpine:latest"
 }
@@ -147,13 +147,12 @@ func BuildInferenceDeployment(inference *kaiiov1alpha1.InferenceTask) *appsv1.De
 	var env []corev1.EnvVar
 
 	s3Path, hfModelID := GetModelPath(inference)
-	engine := GetEngine(inference)
 
 	if s3Path != "" {
 		args = append(args, "--model", "/models/"+s3Path)
 	}
 
-	if hfModelID != "" {
+	if inference.Spec.VLLM != nil && hfModelID != "" {
 		args = append(args, "--trust-remote-code")
 		args = append(args, "--model", hfModelID)
 		if inference.Spec.HFMirror != "" {
@@ -161,54 +160,35 @@ func BuildInferenceDeployment(inference *kaiiov1alpha1.InferenceTask) *appsv1.De
 		}
 	}
 
-	if engine == "vllm" || inference.Spec.VLLM != nil {
-		args = append(args, "--host", "0.0.0.0")
-		args = append(args, "--port", fmt.Sprintf("%d", GetInferencePort(inference)))
-
-		if inference.Spec.VLLM != nil {
-			vllm := inference.Spec.VLLM
-			if vllm.TensorParallelSize > 1 {
-				args = append(args, "--tensor-parallel-size", fmt.Sprintf("%d", vllm.TensorParallelSize))
-			}
-			if vllm.GPUMemoryUtilization != "" {
-				args = append(args, "--gpu-memory-utilization", vllm.GPUMemoryUtilization)
-			}
-			if vllm.MaxModelLen > 0 {
-				args = append(args, "--max-model-len", fmt.Sprintf("%d", vllm.MaxModelLen))
-			}
+	if inference.Spec.TGI != nil && hfModelID != "" {
+		args = append(args, "--trust-remote-code")
+		args = append(args, "--model", hfModelID)
+		if inference.Spec.HFMirror != "" {
+			env = append(env, corev1.EnvVar{Name: "HF_ENDPOINT", Value: inference.Spec.HFMirror})
 		}
 	}
 
-	if engine == "tgi" || inference.Spec.TGI != nil {
-		tgi := inference.Spec.TGI
+	if inference.Spec.VLLM != nil {
+		vllm := inference.Spec.VLLM
 		args = append(args, "--host", "0.0.0.0")
 		args = append(args, "--port", fmt.Sprintf("%d", GetInferencePort(inference)))
 
-		if tgi != nil && tgi.ModelPath != "" {
-			args = append(args, "--model", tgi.ModelPath)
-		} else if tgi != nil && tgi.ModelID != "" {
-			args = append(args, "--trust-remote-code")
-			args = append(args, "--model", tgi.ModelID)
+		if vllm.TensorParallelSize > 1 {
+			args = append(args, "--tensor-parallel-size", fmt.Sprintf("%d", vllm.TensorParallelSize))
 		}
-
-		if tgi != nil {
-			if tgi.MaxBatchSize > 0 {
-				args = append(args, "--max-batch-size", fmt.Sprintf("%d", tgi.MaxBatchSize))
-			}
-			if tgi.MaxInputLen > 0 {
-				args = append(args, "--max-input-length", fmt.Sprintf("%d", tgi.MaxInputLen))
-			}
-			if tgi.MaxTotalTokens > 0 {
-				args = append(args, "--max-total-tokens", fmt.Sprintf("%d", tgi.MaxTotalTokens))
-			}
+		if vllm.GPUMemoryUtilization != "" {
+			args = append(args, "--gpu-memory-utilization", vllm.GPUMemoryUtilization)
+		}
+		if vllm.MaxModelLen > 0 {
+			args = append(args, "--max-model-len", fmt.Sprintf("%d", vllm.MaxModelLen))
 		}
 	}
 
 	if inference.Spec.TGI != nil {
 		tgi := inference.Spec.TGI
-		if tgi.ModelPath != "" {
-			args = append(args, "--model-id", tgi.ModelPath)
-		}
+		args = append(args, "--host", "0.0.0.0")
+		args = append(args, "--port", fmt.Sprintf("%d", GetInferencePort(inference)))
+
 		if tgi.MaxBatchSize > 0 {
 			args = append(args, "--max-batch-size", fmt.Sprintf("%d", tgi.MaxBatchSize))
 		}
@@ -222,9 +202,8 @@ func BuildInferenceDeployment(inference *kaiiov1alpha1.InferenceTask) *appsv1.De
 
 	if inference.Spec.LlamaCpp != nil {
 		llama := inference.Spec.LlamaCpp
-		if llama.ModelPath != "" {
-			args = append(args, "-m", llama.ModelPath)
-		}
+		args = append(args, "--host", "0.0.0.0")
+		args = append(args, "--port", fmt.Sprintf("%d", GetInferencePort(inference)))
 		if llama.ContextSize > 0 {
 			args = append(args, "-c", fmt.Sprintf("%d", llama.ContextSize))
 		}
@@ -239,8 +218,10 @@ func BuildInferenceDeployment(inference *kaiiov1alpha1.InferenceTask) *appsv1.De
 		{Name: "KAI_FRAMEWORK", Value: framework},
 	}...)
 
-	for _, e := range inference.Spec.VLLM.Env {
-		env = append(env, corev1.EnvVar{Name: e.Name, Value: e.Value})
+	if inference.Spec.VLLM != nil && inference.Spec.VLLM.Env != nil {
+		for _, e := range inference.Spec.VLLM.Env {
+			env = append(env, corev1.EnvVar{Name: e.Name, Value: e.Value})
+		}
 	}
 
 	if inference.Spec.TGI != nil && inference.Spec.TGI.Env != nil {
@@ -249,8 +230,8 @@ func BuildInferenceDeployment(inference *kaiiov1alpha1.InferenceTask) *appsv1.De
 		}
 	}
 
-	if inference.Spec.VLLM != nil && inference.Spec.VLLM.Env != nil {
-		for _, e := range inference.Spec.VLLM.Env {
+	if inference.Spec.LlamaCpp != nil && inference.Spec.LlamaCpp.Env != nil {
+		for _, e := range inference.Spec.LlamaCpp.Env {
 			env = append(env, corev1.EnvVar{Name: e.Name, Value: e.Value})
 		}
 	}

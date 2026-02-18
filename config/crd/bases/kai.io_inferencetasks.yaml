@@ -79,6 +79,21 @@ spec:
                     items:
                       type: string
                     type: array
+                  autoScaling:
+                    properties:
+                      maxReplicas:
+                        format: int32
+                        type: integer
+                      minReplicas:
+                        format: int32
+                        type: integer
+                      targetCPUUtilizationPercentage:
+                        format: int32
+                        type: integer
+                      targetGPUUtilizationPercentage:
+                        format: int32
+                        type: integer
+                    type: object
                   command:
                     items:
                       type: string
@@ -105,6 +120,23 @@ spec:
                   gpuLayers:
                     format: int32
                     type: integer
+                  healthCheck:
+                    properties:
+                      initialDelaySeconds:
+                        format: int32
+                        type: integer
+                      path:
+                        type: string
+                      periodSeconds:
+                        format: int32
+                        type: integer
+                      port:
+                        format: int32
+                        type: integer
+                      timeoutSeconds:
+                        format: int32
+                        type: integer
+                    type: object
                   image:
                     type: string
                   modelPath:

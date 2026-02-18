@@ -42,11 +42,13 @@ type VLLMSpec struct {
 
 type LlamaCppSpec struct {
 	BaseToolSpec `json:",inline"`
-	ModelPath    string `json:"modelPath,omitempty"`
-	ContextSize  int32  `json:"contextSize,omitempty"`
-	Threads      int32  `json:"threads,omitempty"`
-	GPULayers    int32  `json:"gpuLayers,omitempty"`
-	Port         int32  `json:"port,omitempty"`
+	ModelPath    string           `json:"modelPath,omitempty"`
+	ContextSize  int32            `json:"contextSize,omitempty"`
+	Threads      int32            `json:"threads,omitempty"`
+	GPULayers    int32            `json:"gpuLayers,omitempty"`
+	Port         int32            `json:"port,omitempty"`
+	HealthCheck  *HealthCheckSpec `json:"healthCheck,omitempty"`
+	AutoScaling  *AutoScalingSpec `json:"autoScaling,omitempty"`
 }
 
 type TGISpec struct {

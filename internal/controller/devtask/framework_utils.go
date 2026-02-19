@@ -17,7 +17,7 @@ limitations under the License.
 package devtask
 
 import (
-	kaiiov1alpha1 "github.com/hwk114/kai/api/v1alpha1"
+	kaiiov1alpha1 "github.com/hwk114/kai-operator/api/v1alpha1"
 )
 
 func GetFramework(task *kaiiov1alpha1.DevTask) string {

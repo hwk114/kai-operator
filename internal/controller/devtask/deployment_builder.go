@@ -20,8 +20,8 @@ import (
 	"context"
 	"fmt"
 
-	kaiiov1alpha1 "github.com/hwk114/kai/api/v1alpha1"
-	"github.com/hwk114/kai/internal/controller/builder"
+	kaiiov1alpha1 "github.com/hwk114/kai-operator/api/v1alpha1"
+	"github.com/hwk114/kai-operator/internal/controller/builder"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"

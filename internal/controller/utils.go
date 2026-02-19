@@ -29,7 +29,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	kaiv1alpha1 "github.com/hwk114/kai/api/v1alpha1"
+	kaiv1alpha1 "github.com/hwk114/kai-operator/api/v1alpha1"
 )
 
 const DefaultRequeueDelay = 30

@@ -19,7 +19,7 @@ package sdk
 import (
 	"context"
 
-	"github.com/hwk114/kai/api/v1alpha1"
+	"github.com/hwk114/kai-operator/api/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"

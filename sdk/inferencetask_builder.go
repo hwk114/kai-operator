@@ -17,7 +17,7 @@ limitations under the License.
 package sdk
 
 import (
-	"github.com/hwk114/kai/api/v1alpha1"
+	"github.com/hwk114/kai-operator/api/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

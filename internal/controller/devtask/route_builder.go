@@ -28,7 +28,7 @@ import (
 
 	gatewayapiv1 "sigs.k8s.io/gateway-api/apis/v1"
 
-	kaiiov1alpha1 "github.com/hwk114/kai/api/v1alpha1"
+	kaiiov1alpha1 "github.com/hwk114/kai-operator/api/v1alpha1"
 )
 
 const (

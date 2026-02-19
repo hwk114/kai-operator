@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hwk114/kai/api/v1alpha1"
+	"github.com/hwk114/kai-operator/api/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 

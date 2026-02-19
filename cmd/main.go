@@ -35,12 +35,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"sigs.k8s.io/gateway-api/apis/v1"
 
-	kaiv1alpha1 "github.com/hwk114/kai/api/v1alpha1"
-	devtaskctrl "github.com/hwk114/kai/internal/controller/devtask"
-	"github.com/hwk114/kai/internal/controller/evaltask"
-	"github.com/hwk114/kai/internal/controller/finetunetask"
-	infracrl "github.com/hwk114/kai/internal/controller/inference"
-	"github.com/hwk114/kai/internal/controller/traintask"
+	kaiv1alpha1 "github.com/hwk114/kai-operator/api/v1alpha1"
+	devtaskctrl "github.com/hwk114/kai-operator/internal/controller/devtask"
+	"github.com/hwk114/kai-operator/internal/controller/evaltask"
+	"github.com/hwk114/kai-operator/internal/controller/finetunetask"
+	infracrl "github.com/hwk114/kai-operator/internal/controller/inference"
+	"github.com/hwk114/kai-operator/internal/controller/traintask"
 	// +kubebuilder:scaffold:imports
 )
 

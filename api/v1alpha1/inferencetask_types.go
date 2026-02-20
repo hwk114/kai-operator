@@ -47,6 +47,7 @@ type LlamaCppSpec struct {
 	Threads      int32            `json:"threads,omitempty"`
 	GPULayers    int32            `json:"gpuLayers,omitempty"`
 	Port         int32            `json:"port,omitempty"`
+	N            *int32           `json:"n,omitempty"`
 	HealthCheck  *HealthCheckSpec `json:"healthCheck,omitempty"`
 	AutoScaling  *AutoScalingSpec `json:"autoScaling,omitempty"`
 }
@@ -101,7 +102,7 @@ func (r *InferenceTask) GetFramework() string {
 		return "vllm"
 	}
 	if r.Spec.LlamaCpp != nil {
-		return "llama-cpp"
+		return "llama.cpp"
 	}
 	if r.Spec.TGI != nil {
 		return "tgi"

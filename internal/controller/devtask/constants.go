@@ -16,6 +16,10 @@ limitations under the License.
 
 package devtask
 
+import (
+	"github.com/hwk114/kai-operator/internal/config"
+)
+
 const (
 	FinalizerName = "devtask.kai.io/finalizer"
 	RequeueDelay  = 30
@@ -26,7 +30,7 @@ const (
 	FrameworkJupyter    = "jupyter"
 	FrameworkNoVNC      = "novnc"
 	FrameworkVLLM       = "vllm"
-	FrameworkLlamaCpp   = "llama-cpp"
+	FrameworkLlamaCpp   = "llama.cpp"
 	FrameworkTGI        = "tgi"
 )
 
@@ -39,37 +43,14 @@ const (
 	DefaultCPU     = "500m"
 	DefaultMemory  = "512Mi"
 	DefaultGPU     = "0"
-	DefaultPort    = int32(8080)
 	DefaultGPUUtil = "0.9"
 )
 
-var ToolImages = map[string]map[string]string{
-	FrameworkCodeServer: {
-		"default": "codercom/code-server:latest",
-	},
-	FrameworkJupyter: {
-		"default":    "jupyter/base-notebook:python-3.11",
-		"minimal":    "jupyter/base-notebook:python-3.11",
-		"tensorflow": "jupyter/tensorflow-notebook:latest",
-	},
-	FrameworkNoVNC: {
-		"default": "novnc:20260214-dev",
-	},
-	FrameworkVLLM: {
-		"default": "vllm/vllm-openai:nightly-aarch64",
-	},
-	FrameworkLlamaCpp: {
-		"default": "ghcr.io/ggerganov/llama.cpp:server",
-	},
-	FrameworkTGI: {
-		"default": "ghcr.io/huggingface/text-generation-inference:latest",
-	},
-}
-
 var DefaultPorts = map[string]int32{
-	FrameworkCodeServer: 8080,
-	FrameworkJupyter:    8888,
-	FrameworkNoVNC:      6081,
-	FrameworkVLLM:       8000,
-	FrameworkTGI:        3000,
+	FrameworkCodeServer: config.GetFrameworkPort("codeserver"),
+	FrameworkJupyter:    config.GetFrameworkPort("jupyter"),
+	FrameworkNoVNC:      config.GetFrameworkPort("novnc"),
+	FrameworkVLLM:       config.GetFrameworkPort("vllm"),
+	FrameworkTGI:        config.GetFrameworkPort("tgi"),
+	FrameworkLlamaCpp:   config.GetFrameworkPort("llama.cpp"),
 }

@@ -21,6 +21,7 @@ import (
 	"strings"
 
 	kaiiov1alpha1 "github.com/hwk114/kai-operator/api/v1alpha1"
+	"github.com/hwk114/kai-operator/internal/config"
 	"github.com/hwk114/kai-operator/internal/controller/builder"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -95,7 +96,7 @@ func GetEngine(inference *kaiiov1alpha1.InferenceTask) string {
 		return "tgi"
 	}
 	if inference.Spec.LlamaCpp != nil {
-		return "llama-cpp"
+		return "llama.cpp"
 	}
 	return ""
 }
@@ -110,7 +111,16 @@ func GetInferencePort(inference *kaiiov1alpha1.InferenceTask) int32 {
 	if inference.Spec.LlamaCpp != nil && inference.Spec.LlamaCpp.Port > 0 {
 		return inference.Spec.LlamaCpp.Port
 	}
-	return 8000
+	if inference.Spec.VLLM != nil {
+		return config.GetFrameworkPort("vllm")
+	}
+	if inference.Spec.TGI != nil {
+		return config.GetFrameworkPort("tgi")
+	}
+	if inference.Spec.LlamaCpp != nil {
+		return config.GetFrameworkPort("llama.cpp")
+	}
+	return config.GetFrameworkPort("vllm")
 }
 
 func GetInferenceImage(inference *kaiiov1alpha1.InferenceTask) string {
@@ -118,19 +128,19 @@ func GetInferenceImage(inference *kaiiov1alpha1.InferenceTask) string {
 		if inference.Spec.VLLM.Image != "" {
 			return inference.Spec.VLLM.Image
 		}
-		return "vllm/vllm-openai:nightly-aarch64"
+		return config.GetFrameworkImage("vllm")
 	}
 	if inference.Spec.TGI != nil {
 		if inference.Spec.TGI.Image != "" {
 			return inference.Spec.TGI.Image
 		}
-		return "ghcr.io/huggingface/text-generation-inference:latest"
+		return config.GetFrameworkImage("tgi")
 	}
 	if inference.Spec.LlamaCpp != nil {
 		if inference.Spec.LlamaCpp.Image != "" {
 			return inference.Spec.LlamaCpp.Image
 		}
-		return "ghcr.io/ggml-org/llama.cpp/server"
+		return config.GetFrameworkImage("llama.cpp")
 	}
 	return "alpine:latest"
 }
@@ -149,7 +159,11 @@ func BuildInferenceDeployment(inference *kaiiov1alpha1.InferenceTask) *appsv1.De
 	s3Path, hfModelID := GetModelPath(inference)
 
 	if s3Path != "" {
-		args = append(args, "--model", "/models/"+s3Path)
+		if inference.Spec.LlamaCpp != nil {
+			args = append(args, "-m", "/models/"+s3Path)
+		} else {
+			args = append(args, "--model", "/models/"+s3Path)
+		}
 	}
 
 	if inference.Spec.VLLM != nil && hfModelID != "" {
@@ -207,8 +221,14 @@ func BuildInferenceDeployment(inference *kaiiov1alpha1.InferenceTask) *appsv1.De
 		if llama.ContextSize > 0 {
 			args = append(args, "-c", fmt.Sprintf("%d", llama.ContextSize))
 		}
+		if llama.Threads > 0 {
+			args = append(args, "-t", fmt.Sprintf("%d", llama.Threads))
+		}
 		if llama.GPULayers > 0 {
 			args = append(args, "--n-gpu-layers", fmt.Sprintf("%d", llama.GPULayers))
+		}
+		if llama.N != nil && *llama.N > 0 {
+			args = append(args, "-n", fmt.Sprintf("%d", *llama.N))
 		}
 	}
 

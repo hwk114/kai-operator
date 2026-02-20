@@ -18,6 +18,7 @@ package devtask
 
 import (
 	kaiiov1alpha1 "github.com/hwk114/kai-operator/api/v1alpha1"
+	"github.com/hwk114/kai-operator/internal/config"
 )
 
 func GetFramework(task *kaiiov1alpha1.DevTask) string {
@@ -50,20 +51,7 @@ func GetToolSpecAndImage(task *kaiiov1alpha1.DevTask) (*kaiiov1alpha1.BaseToolSp
 }
 
 func GetImageByFramework(framework, version string) string {
-	if version == "" {
-		version = "default"
-	}
-
-	if images, ok := ToolImages[framework]; ok {
-		if img, ok := images[version]; ok {
-			return img
-		}
-		if img, ok := images["default"]; ok {
-			return img
-		}
-	}
-
-	return "alpine:latest"
+	return config.GetFrameworkImage(framework)
 }
 
 func GetServicePort(framework string, configuredPort int32) int32 {

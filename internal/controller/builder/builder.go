@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	kaiiov1alpha1 "github.com/hwk114/kai-operator/api/v1alpha1"
+	"github.com/hwk114/kai-operator/internal/config"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -38,12 +39,8 @@ var CommonLabels = map[string]string{
 	"app.kubernetes.io/managed-by": "kai-operator",
 }
 
-var DefaultPorts = map[string]int32{
-	"codeserver": 8080,
-	"jupyter":    8888,
-	"novnc":      6080,
-	"vllm":       8000,
-	"tgi":        3000,
+func GetDefaultPort(framework string) int32 {
+	return config.GetFrameworkPort(framework)
 }
 
 func BuildDeployment(name, namespace, framework, taskType, image string, replicas int32, container corev1.Container, labels map[string]string) *appsv1.Deployment {

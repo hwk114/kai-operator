@@ -58,8 +58,7 @@ func (b *InferenceTaskBuilder) WithVLLM(model string, opts ...func(*v1alpha1.VLL
 func (b *InferenceTaskBuilder) WithLlamaCpp(model string, opts ...func(*v1alpha1.LlamaCppSpec)) *InferenceTaskBuilder {
 	spec := v1alpha1.LlamaCppSpec{
 		BaseToolSpec: v1alpha1.BaseToolSpec{
-			Image: "ghcr.io/ggerganov/llama.cpp:latest",
-			Port:  8080,
+			Image: "ghcr.io/ggml-org/llama.cpp:server",
 		},
 		ModelPath: model,
 	}
